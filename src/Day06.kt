@@ -3,7 +3,7 @@ import java.awt.Point
 
 fun main() {
 
-    var currentPos = Position(0, 0, UP)
+    var currentPosition = Position(0, 0, UP)
     val obstacles = mutableListOf<Point>()
     val pointsVisited = mutableListOf<Position>()
 
@@ -18,34 +18,57 @@ fun main() {
             }
             if (line.contains('^')) {
                 val x = line.indexOfFirst { it == '^' }
-                currentPos = Position(x, y, UP)
+                currentPosition = Position(x, y, UP)
             }
         }
     }
 
     fun part1(input: List<String>): Int {
         parseInput(input)
-        pointsVisited.add(currentPos)
-        while (!currentPos.canEscape(input)) {
-            currentPos.move()
-            pointsVisited.add(currentPos.copy())
-            if (!currentPos.canMove(input)) {
-                currentPos.turn()
+        pointsVisited.add(currentPosition.copy())
+        while (!currentPosition.canEscape(input)) {
+            currentPosition.move()
+            pointsVisited.add(currentPosition.copy())
+            if (!currentPosition.canMove(input)) {
+                currentPosition.turn()
             }
         }
         return pointsVisited.map { Point(it.x, it.y) }.toSet().count()
     }
 
     fun part2(input: List<String>): Int {
-        return 0
+        parseInput(input)
+        pointsVisited.add(currentPosition.copy())
+        var loopCount = 0
+        while (!currentPosition.canEscape(input)) {
+            currentPosition.move()
+            pointsVisited.add(currentPosition.copy())
+
+            // Take a copy of the current point, turn it and move until the next obstacle. If we've already
+            // been to the position it ends up, then we are theoretically in a loop.
+            val posCopy = currentPosition.copy()
+            posCopy.turn()
+            while (posCopy.canMove(input)) {
+                posCopy.move()
+            }
+            if (pointsVisited.contains(posCopy)) {
+                loopCount++
+            }
+
+            if (!currentPosition.canMove(input)) {
+                currentPosition.turn()
+            }
+        }
+        return loopCount
     }
 
     // Test if implementation meets criteria from the description, like:
     check(part1(readInput("input/test_input")) == 41)
+    check(part2(readInput("input/test_input")) == 6)
 
     val input = readInput("input/Day06")
     part1(input).println()
-    //part2(input).println()
+    part2(input).println()
 }
 
 private enum class Direction { UP, DOWN, LEFT, RIGHT }
