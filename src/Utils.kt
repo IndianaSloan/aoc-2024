@@ -44,3 +44,19 @@ fun Point.move(other: Point): Point {
 fun Point.isInGrid(grid: List<String>): Boolean {
     return x in 0..grid.first().lastIndex && y in 0..grid.lastIndex
 }
+
+fun Point.toVariations(): List<Point> {
+    return listOf(
+        this,
+        this.rotate(),
+        this.rotate().rotate(),
+        this.rotate().reverse().rotate()
+    )
+}
+
+fun Point.rotate(): Point {
+    return Point(
+        y,
+        if (x > 0) -x else abs(x),
+    )
+}
