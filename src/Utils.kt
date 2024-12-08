@@ -1,7 +1,9 @@
+import java.awt.Point
 import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.io.path.Path
 import kotlin.io.path.readText
+import kotlin.math.abs
 
 /**
  * Reads lines from the given input txt file.
@@ -19,3 +21,26 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
  * The cleaner shorthand for printing output.
  */
 fun Any?.println() = println(this)
+
+fun Point.distanceTo(other: Point): Point {
+    val dx = other.x - x
+    val dy = other.y - y
+    return Point(dx, dy)
+}
+
+fun Point.reverse(): Point {
+    val newX = if (x > 0) -x else abs(x)
+    val newY = if (y > 0) -y else abs(y)
+    return Point(newX, newY)
+}
+
+fun Point.move(other: Point): Point {
+    return Point(
+        x + other.x,
+        y + other.y,
+    )
+}
+
+fun Point.isInGrid(grid: List<String>): Boolean {
+    return x in 0..grid.first().lastIndex && y in 0..grid.lastIndex
+}
