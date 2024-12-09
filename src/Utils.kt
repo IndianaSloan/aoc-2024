@@ -22,6 +22,8 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
  */
 fun Any?.println() = println(this)
 
+fun Int.isEven(): Boolean = this % 2 == 0
+
 fun Point.distanceTo(other: Point): Point {
     val dx = other.x - x
     val dy = other.y - y
